@@ -44,8 +44,8 @@ export default Vue.extend({
 
   .logo {
     text-transform: uppercase;
-    font-size: 19px;
-    font-weight: 500;
+    font-size: 23px;
+    font-weight: 400;
     color: #fff;
     letter-spacing: 5px;
   }
@@ -62,21 +62,26 @@ export default Vue.extend({
 
   nav {
     display: grid;
-    grid-gap: 15px;
+    grid-gap: 20px;
     width: 100%;
 
     .link {
       display: flex;
       align-items: center;
       text-decoration: none;
-      padding: 10px;
-      border-radius: 4px;
+      padding: 11px 20px;
+      border-radius: 50px;
+      background-color: $dark_grey;
+
+      &:hover {
+        background-color: rgb(42, 42, 42);
+      }
 
       .icon {
         width: 16px;
         height: auto;
         filter: invert(100%);
-        margin-right: 16px;
+        margin-right: 18px;
       }
 
       .label {
@@ -88,12 +93,16 @@ export default Vue.extend({
     .link-active {
       background-color: #fff;
 
+      &:hover {
+        background-color: #fff;
+      }
+
       .icon {
         filter: invert(0%);
       }
 
       .label {
-        color: #000;
+        color: $dark_grey;
         font-size: 14px;
       }
     }

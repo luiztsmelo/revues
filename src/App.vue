@@ -11,16 +11,17 @@ import Vue from 'vue'
 
 export default Vue.extend({
   created () {
-    this.$store.dispatch('fetchData')
+    this.$store.dispatch('fetchReviews')
   }
 })
 </script>
 
 <style lang="scss">
 @import '../node_modules/normalize.css/normalize.css';
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 #app {
-  font-family: 'Inter';
+  font-family: 'Poppins';
+  color: #333333;
 }
 </style>

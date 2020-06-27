@@ -16,7 +16,6 @@ export default Vue.extend({
 #dashboard-view {
   grid-area: DashboardView;
   display: grid;
-  padding: 40px;
-  background-color: rgb(252,252,252);
+  padding: 20px 40px 40px 40px;
 }
 </style>

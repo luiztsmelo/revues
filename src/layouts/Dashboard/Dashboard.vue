@@ -1,6 +1,10 @@
 <template>
   <div id="dashboard-layout">
 
+    <Loading v-if="$store.state.loading" />
+
+    <DashboardHeader />
+
     <DashboardSidebar :links="dashboardSidebarLinks" />
 
     <DashboardView>
@@ -12,12 +16,16 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import Loading from '@/components/Loading.vue'
+import DashboardHeader from './components/DashboardHeader.vue'
 import DashboardSidebar from './components/DashboardSidebar.vue'
 import DashboardView from './components/DashboardView.vue'
 
 export default Vue.extend({
   name: 'dashboard-layout',
   components: {
+    Loading,
+    DashboardHeader,
     DashboardSidebar,
     DashboardView
   },
@@ -49,8 +57,10 @@ export default Vue.extend({
 #dashboard-layout {
   display: grid;
   grid-template-areas:
+    'DashboardSidebar DashboardHeader'
     'DashboardSidebar DashboardView';
-  grid-template-columns: 220px auto;
+  grid-template-columns: 230px auto;
+  grid-template-rows: 120px auto;
   height: 100vh;
   width: 100vw;
 }
