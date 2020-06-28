@@ -22,14 +22,27 @@ export default Vue.extend({
         plotOptions: {
           bar: {
             horizontal: true,
-            barHeight: '26%',
+            barHeight: '40%',
+            dataLabels: {
+              position: 'top'
+            },
             colors: {
-              backgroundBarColors: ['#dedede']
+              backgroundBarColors: ['#e8e8e8']
             }
           }
         },
+        grid: {
+          show: false
+        },
         dataLabels: {
-          enabled: false
+          enabled: true,
+          formatter: function (val) {
+            return val
+          },
+          style: {
+            fontSize: '11px',
+            colors: ['#FFF']
+          }
         },
         xaxis: {
           labels: {

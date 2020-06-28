@@ -15,7 +15,8 @@ export default Vue.extend({
 <style lang="scss">
 #dashboard-view {
   grid-area: DashboardView;
-  display: grid;
-  padding: 20px 40px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 40px 40px 40px;
 }
 </style>

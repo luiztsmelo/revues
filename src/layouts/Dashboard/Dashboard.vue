@@ -7,7 +7,7 @@
 
     <DashboardSidebar :links="dashboardSidebarLinks" />
 
-    <DashboardView>
+    <DashboardView v-if="!$store.state.loading">
       <slot />
     </DashboardView>
 
@@ -61,7 +61,7 @@ export default Vue.extend({
     'DashboardSidebar DashboardView';
   grid-template-columns: 230px auto;
   grid-template-rows: 120px auto;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
 }
 </style>

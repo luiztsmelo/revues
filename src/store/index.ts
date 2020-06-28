@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
-import { groupBy } from 'lodash'
+import { sortBy, groupBy, filter, reject } from 'lodash'
 
 Vue.use(Vuex)
 
@@ -12,7 +12,13 @@ export default new Vuex.Store({
       status: false,
       message: null
     },
-    reviews: []
+    reviews: [],
+    openedFilter: null,
+    filters: [],
+    pagination: {
+      itemsPerPage: 12,
+      page: 1
+    }
   },
   mutations: {
     SET_LOADING (state, payload) {
@@ -23,9 +29,54 @@ export default new Vuex.Store({
     },
     SET_REVIEWS (state, payload) {
       state.reviews = payload
+    },
+    SET_OPENDED_FILTER (state, payload) {
+      state.openedFilter = payload
+    },
+    SET_FILTER (state, payload) {
+      const sameParameterFilterFounded = state.filters.find(filter => filter.parameter === payload.parameter)
+      const filterFounded = state.filters.find(filter => filter === payload)
+
+      if (sameParameterFilterFounded) {
+        state.filters = reject(state.filters, sameParameterFilterFounded)
+      }
+
+      if (filterFounded !== undefined) {
+        state.filters = reject(state.filters, payload)
+      } else {
+        state.filters.push(payload)
+      }
+    },
+    SET_PAGINATION_PAGE (state, payload) {
+      state.pagination.page = payload
     }
   },
   getters: {
+    filteredReviews: state => (itemsPerPage: number, page: number) => {
+      const reviews = sortBy(state.reviews, 'date').reverse()
+
+      let filteredReviews = reviews
+
+      if (state.filters.length > 0) {
+        for (const selectedFilter of state.filters) {
+          filteredReviews = filter(filteredReviews, { [selectedFilter.parameter]: selectedFilter.value })
+        }
+      }
+
+      if (itemsPerPage && page) {
+        return filteredReviews.slice(itemsPerPage * page - (itemsPerPage - 1) - 1, itemsPerPage * page)
+      } else {
+        return filteredReviews
+      }
+    },
+    latestNegativeReviews: state => (items: number) => {
+      const latestNegativeReviews = filter(state.reviews, { sentiment: 'Negativo' }).reverse()
+
+      const r = groupBy(state.reviews, 'categories')
+      console.log(r)
+
+      return latestNegativeReviews.slice(0, items)
+    },
     averageScore: state => {
       if (state.reviews.length > 0) {
         const averageScore = state.reviews.reduce((prev, curr) => prev + curr.score, 0) / state.reviews.length
@@ -36,53 +87,33 @@ export default new Vuex.Store({
       }
     },
     groupReviews: state => (parameter: string) => {
-      console.log(Object.entries(groupBy(state.reviews, parameter)))
       return Object.entries(groupBy(state.reviews, parameter))
     },
-    reviewsDailyValues: (state, getters) => {
-      const reviewsDailyValues = []
+    reviewsDailyConsolidations: (state, getters) => {
+      const reviewsDailyConsolidations = []
 
       for (const date of getters.groupReviews('date')) {
         const reviewsThisDate = date[1]
 
         const averageScore = reviewsThisDate.reduce((prev, curr) => prev + curr.score, 0) / reviewsThisDate.length
 
-        reviewsDailyValues.push({
+        reviewsDailyConsolidations.push({
           date: date[0],
           totalReviews: reviewsThisDate.length,
           averageScore: averageScore.toFixed(2)
         })
       }
 
-      return reviewsDailyValues
+      return reviewsDailyConsolidations
     },
     totalReviewsByScore: state => {
-      if (state.reviews.length > 0) {
-        const totalReviewsByScore = state.reviews.map(review => review.score).reduce((scores, star) => {
-          if (star in scores) {
-            scores[star]++
-          } else {
-            scores[star] = 1
-          }
+      const totalReviewsByScore = []
 
-          return scores
-        }, {})
-
-        return Object.values(totalReviewsByScore).reverse()
-      } else {
-        return 0
+      for (const score of [5, 4, 3, 2, 1]) {
+        totalReviewsByScore.push(filter(state.reviews, { score: score }).length)
       }
-    },
-    latestReviews: state => {
-      if (state.reviews.length > 0) {
-        const sortedReviewsByDate = state.reviews.sort((a, b) => b.date - a.date)
 
-        const latestReviews = sortedReviewsByDate.slice(Math.max(state.reviews.length - 5, 1))
-
-        return latestReviews.reverse()
-      } else {
-        return []
-      }
+      return totalReviewsByScore
     }
   },
   actions: {
@@ -102,6 +133,16 @@ export default new Vuex.Store({
         })
       } finally {
         commit('SET_LOADING', false)
+      }
+    },
+    previousPage ({ state, commit }) {
+      if (state.pagination.page > 1) {
+        commit('SET_PAGINATION_PAGE', state.pagination.page - 1)
+      }
+    },
+    nextPage ({ state, getters, commit }) {
+      if (getters.filteredReviews(0, 0).length > state.pagination.itemsPerPage * state.pagination.page) {
+        commit('SET_PAGINATION_PAGE', state.pagination.page + 1)
       }
     }
   }

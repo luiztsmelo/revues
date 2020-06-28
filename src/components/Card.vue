@@ -1,7 +1,7 @@
 <template>
   <div class="card">
 
-    <span class="label">{{ label }}</span>
+    <span class="label" v-if="!!label">{{ label }}</span>
 
     <slot />
 
@@ -14,7 +14,7 @@ import Vue from 'vue'
 export default Vue.extend({
   name: 'card',
   props: {
-    label: { type: String, default: 'Label', required: true }
+    label: { type: String }
   }
 })
 </script>

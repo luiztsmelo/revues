@@ -18,28 +18,21 @@
       <DailyAverageScoreChart />
     </Card>
 
-    <Card label="Últimas avaliações" style="grid-area: 2 / 1 / 3 / 3">
+    <Card label="Últimas avaliações negativas" style="grid-area: 2 / 1 / 5 / 3">
       <div class="reviews-table">
-        <div class="review" v-for="(review, index) in $store.getters.latestReviews" :key="index">
-          <div class="sentiment">
-            <img :src="sentimentImgSrc(review)" :alt="review.sentiment">
-          </div>
-
-          <div class="details">
-            <span class="reviewer">{{ review.reviewer }}<span class="date">{{ review.date }}</span></span>
-            <span class="text">{{ review.text }}</span>
-          </div>
-
-          <div class="score">
-            <span class="source">{{ review.source }}</span>
-            <StarRating :score="review.score" />
-          </div>
-        </div>
+        <Review v-for="(review, index) in $store.getters.latestNegativeReviews(10, 1)" :key="index" :review="review" />
       </div>
     </Card>
 
-    <Card label="Avaliações por canal" style="grid-area: 2 / 3 / 3 / 4">
-      <span style="display: none">{{ $store.getters.reviewsDailyValues }}</span>
+    <Card label="Avaliações por sentimento" style="grid-area: 2 / 3 / 3 / 4">
+      <apexchart type="bar" height="85%" :options="chartOptionsSentiment" :series="seriesSentiment" />
+    </Card>
+
+    <Card label="Avaliações por canal" style="grid-area: 3 / 3 / 4 / 4">
+      <apexchart type="bar" height="85%" :options="chartOptionsSource" :series="seriesSource" />
+    </Card>
+
+    <Card label="Avaliações por gênero" style="grid-area: 4 / 3 / 5 / 4">
     </Card>
 
   </div>
@@ -50,7 +43,7 @@ import Vue from 'vue'
 import Card from '@/components/Card.vue'
 import TotalReviewsByScoreChart from '@/components/charts/TotalReviewsByScoreChart.vue'
 import DailyAverageScoreChart from '@/components/charts/DailyAverageScoreChart.vue'
-import StarRating from '@/components/StarRating.vue'
+import Review from '@/components/Review.vue'
 
 export default Vue.extend({
   name: 'home',
@@ -58,7 +51,123 @@ export default Vue.extend({
     Card,
     TotalReviewsByScoreChart,
     DailyAverageScoreChart,
-    StarRating
+    Review
+  },
+  data () {
+    return {
+      seriesSource: [{
+        data: [
+          {
+            x: 'Google',
+            y: 80
+          },
+          {
+            x: 'Facebook',
+            y: 20
+          }
+        ]
+      }],
+      seriesSentiment: [{
+        data: [
+          {
+            x: 'Positivo',
+            y: 70
+          },
+          {
+            x: 'Neutro',
+            y: 20
+          },
+          {
+            x: 'Negativo',
+            y: 10
+          }
+        ]
+      }],
+      chartOptionsSource: {
+        chart: {
+          toolbar: {
+            show: false
+          },
+          fontFamily: 'Poppins'
+        },
+        tooltip: {
+          enabled: false
+        },
+        colors: ['#181818'],
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            barHeight: '40%',
+            dataLabels: {
+              position: 'top'
+            }
+          }
+        },
+        grid: {
+          show: false
+        },
+        dataLabels: {
+          enabled: true,
+          offsetX: -8,
+          formatter: function (val) {
+            return val + '%'
+          },
+          style: {
+            fontSize: '12px',
+            colors: ['#FFF']
+          }
+        },
+        xaxis: {
+          labels: {
+            show: false
+          }
+        }
+      },
+      chartOptionsSentiment: {
+        chart: {
+          toolbar: {
+            show: false
+          },
+          fontFamily: 'Poppins'
+        },
+        tooltip: {
+          enabled: false
+        },
+        colors: ['#2DD278', '#FFB600', '#EE3C37'],
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            barHeight: '50%',
+            distributed: true,
+            dataLabels: {
+              position: 'top'
+            }
+          }
+        },
+        grid: {
+          show: false
+        },
+        dataLabels: {
+          enabled: true,
+          offsetX: -8,
+          formatter: function (val) {
+            return val + '%'
+          },
+          style: {
+            fontSize: '12px',
+            colors: ['#FFF']
+          }
+        },
+        legend: {
+          show: false
+        },
+        xaxis: {
+          labels: {
+            show: false
+          }
+        }
+      }
+    }
   },
   methods: {
     sentimentImgSrc (review) {
@@ -76,7 +185,7 @@ export default Vue.extend({
 #home {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 260px 1fr;
+  grid-template-rows: 260px 1fr 1fr 1fr;
   grid-gap: 22px;
 
   .score-container {
@@ -105,63 +214,11 @@ export default Vue.extend({
   }
 
   .reviews-table {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: auto;
+    grid-gap: 22px;
     margin-top: 20px;
-
-    .review {
-      display: grid;
-      grid-template-columns: 90px 4fr 1fr;
-      align-items: center;
-      padding: 22px 0;
-      border-bottom: 1px solid #dedede;
-
-      &:last-child {
-        border: none;
-      }
-
-      .sentiment {
-        display: grid;
-        align-items: center;
-        justify-content: center;
-
-        img {
-          width: 38px;
-          height: 38px;
-        }
-      }
-
-      .details {
-        display: grid;
-
-        .reviewer {
-          font-size: 14px;
-          font-weight: 600;
-          padding-bottom: 8px;
-        }
-
-        .text {
-          font-size: 14px;
-        }
-
-        .date {
-          font-size: 13px;
-          font-weight: 400;
-          color: $light_text;
-          padding-left: 10px;
-        }
-      }
-
-      .score {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        .source {
-          font-size: 14px;
-          font-weight: 400;
-          padding-bottom: 6px;
-        }
-      }
-    }
   }
 }
 </style>

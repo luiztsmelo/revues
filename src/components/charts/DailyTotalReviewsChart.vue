@@ -10,7 +10,7 @@ export default Vue.extend({
     series () {
       const data = []
 
-      for (const date of this.$store.getters.reviewsDailyValues) {
+      for (const date of this.$store.getters.reviewsDailyConsolidations) {
         data.push({
           x: date.date,
           y: date.totalReviews
@@ -31,7 +31,16 @@ export default Vue.extend({
           fontFamily: 'Poppins'
         },
         dataLabels: {
-          enabled: true
+          enabled: true,
+          style: {
+            fontSize: '13px',
+            fontWeight: '500',
+            colors: ['#181818']
+          },
+          background: {
+            padding: 5,
+            borderRadius: 5
+          }
         },
         colors: ['#26B8EA'],
         stroke: {
@@ -39,10 +48,7 @@ export default Vue.extend({
           colors: ['#26B8EA']
         },
         grid: {
-          row: {
-            colors: ['#f3f3f3', 'transparent'],
-            opacity: 0.5
-          }
+          show: false
         },
         yaxis: {
           show: false

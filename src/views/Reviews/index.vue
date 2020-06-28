@@ -1,30 +1,40 @@
 <template>
-  <div id="reviews">
-    <div class="review" v-for="(review, index) in $store.state.reviews.reverse().slice(0, 20)" :key="index">
-      <header>
-        <div class="sentiment" :class="review.sentiment === 'Positivo' ? 'sentiment-positive' : 'sentiment-negative'"></div>
+  <div id="reviews" @click="$store.commit('SET_OPENDED_FILTER', null)">
 
-        <div class="details">
-          <span class="reviewer">{{ review.reviewer }}</span>
-          <span class="date">{{ review.date }}</span>
-        </div>
-
-        <StarRating :score="review.score" />
-      </header>
-
-      <span class="text">{{ review.text }}</span>
+    <div class="filters">
+      <span class="label">Filtros: </span>
+      <ReviewsFilter label="Avaliação" parameter="score" />
+      <ReviewsFilter label="Sentimento" parameter="sentiment" />
+      <ReviewsFilter label="Gênero" parameter="gender" />
+      <ReviewsFilter label="Canal" parameter="source" />
     </div>
+
+    <Card>
+      <div class="reviews-grid">
+        <Review v-for="(review, index) in $store.getters.filteredReviews($store.state.pagination.itemsPerPage, $store.state.pagination.page)" :key="index" :review="review" />
+        <span v-if="$store.getters.filteredReviews(0, 0).length === 0" >Nenhum resultado encontrado.</span>
+      </div>
+    </Card>
+
+    <Pagination />
+
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import StarRating from '@/components/StarRating.vue'
+import ReviewsFilter from '@/components/ReviewsFilter.vue'
+import Card from '@/components/Card.vue'
+import Review from '@/components/Review.vue'
+import Pagination from '@/components/Pagination.vue'
 
 export default Vue.extend({
   name: 'reviews',
   components: {
-    StarRating
+    ReviewsFilter,
+    Card,
+    Review,
+    Pagination
   }
 })
 </script>
@@ -32,65 +42,27 @@ export default Vue.extend({
 <style lang="scss" scoped>
 #reviews {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: 160px;
+  grid-template-columns: 1fr;
+  grid-template-rows: 28px auto 50px;
   grid-gap: 22px;
 
-  .review {
-    cursor: pointer;
-    background-color: $light_grey;
-    border-radius: 12px;
-    padding: 16px;
-    transition: transform .2s ease-out;
+  .filters {
+    display: flex;
+    align-items: center;
 
-    &:hover {
-      transform: scale(1.02);
+    .label {
+      padding-right: 9px;
+      font-size: 15px;
+      font-weight: 500;
     }
+  }
 
-    header {
-      display: grid;
-      grid-template-columns: 50px 1fr auto;
-      border-bottom: 1px solid #dedede;
-      padding-bottom: 10px;
-      margin-bottom: 10px;
-
-      .sentiment {
-        width: 38px;
-        height: 38px;
-        mask-size: 38px 38px;
-        border-radius: 50%;
-      }
-
-      .sentiment-positive {
-        mask-image: url('../../assets/images/positive_sentiment.svg');
-        background-color: $green;
-      }
-
-      .sentiment-negative {
-        mask-image: url('../../assets/images/negative_sentiment.svg');
-        background-color: $red;
-      }
-
-      .details {
-        display: grid;
-
-        .reviewer {
-          font-size: 13px;
-          font-weight: 600;
-          padding-bottom: 4px;
-        }
-
-        .date {
-          font-size: 13px;
-          font-weight: 400;
-          color: $light_text;
-        }
-      }
-    }
-
-    .text {
-      font-size: 13px;
-    }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 120px;
+    grid-gap: 25px;
+    align-items: center;
   }
 }
 </style>

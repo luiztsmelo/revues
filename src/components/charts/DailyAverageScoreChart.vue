@@ -10,7 +10,7 @@ export default Vue.extend({
     series () {
       const data = []
 
-      for (const date of this.$store.getters.reviewsDailyValues) {
+      for (const date of this.$store.getters.reviewsDailyConsolidations) {
         data.push({
           x: date.date,
           y: date.averageScore
@@ -48,10 +48,7 @@ export default Vue.extend({
           colors: ['#FFB600']
         },
         grid: {
-          row: {
-            colors: ['#f3f3f3', 'transparent'],
-            opacity: 0.5
-          }
+          show: false
         },
         yaxis: {
           show: false,
