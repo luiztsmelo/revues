@@ -33,7 +33,6 @@ export default Vue.extend({
   align-items: center;
   justify-self: center;
   align-self: center;
-  background-color: $light_grey;
 
   .range {
     font-size: 14px;

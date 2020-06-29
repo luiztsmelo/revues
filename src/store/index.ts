@@ -1,21 +1,19 @@
 import Vue from 'vue'
-import Vuex from 'vuex'
+import Vuex, { StoreOptions } from 'vuex'
 import axios from 'axios'
 import createPersistedState from 'vuex-persistedstate'
-import { mean, sortBy, groupBy, filter, reject, uniq } from 'lodash'
+import { mean, sortBy, groupBy, filter, find, reject, clone, toPairs } from 'lodash'
+import { RootState, Review, Filter } from '@/types'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+const store: StoreOptions<RootState> = {
   plugins: [createPersistedState({ storage: window.localStorage })],
   state: {
     loading: false,
-    error: {
-      status: false,
-      message: null
-    },
+    error: null,
     reviews: [],
-    openedFilter: null,
+    openedFilter: '',
     filters: [],
     pagination: {
       itemsPerPage: 12,
@@ -23,34 +21,34 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    SET_LOADING (state, payload) {
-      state.loading = payload
+    SET_LOADING (state, status: boolean) {
+      state.loading = status
     },
-    SET_ERROR (state, payload) {
-      state.error = payload
+    SET_ERROR (state, error: any) {
+      state.error = error
     },
-    SET_REVIEWS (state, payload) {
-      state.reviews = payload
+    SET_REVIEWS (state, reviews: Review[]) {
+      state.reviews = reviews
     },
-    SET_OPENDED_FILTER (state, payload) {
-      state.openedFilter = payload
+    SET_OPENDED_FILTER (state, parameter: string) {
+      state.openedFilter = parameter
     },
-    SET_FILTER (state, payload) {
-      const sameParameterFilterFounded = state.filters.find(filter => filter.parameter === payload.parameter)
-      const filterFounded = state.filters.find(filter => filter === payload)
+    SET_FILTER (state, filter: Filter) {
+      const sameParameterFilterFounded = find(state.filters, { parameter: filter.parameter })
+      const filterFounded = find(state.filters, filter)
 
       if (sameParameterFilterFounded) {
         state.filters = reject(state.filters, sameParameterFilterFounded)
       }
 
-      if (filterFounded !== undefined) {
-        state.filters = reject(state.filters, payload)
+      if (filterFounded) {
+        state.filters = reject(state.filters, filter)
       } else {
-        state.filters.push(payload)
+        state.filters.push(filter)
       }
     },
-    SET_PAGINATION_PAGE (state, payload) {
-      state.pagination.page = payload
+    SET_PAGINATION_PAGE (state, page: number) {
+      state.pagination.page = page
     }
   },
   getters: {
@@ -90,20 +88,18 @@ export default new Vuex.Store({
     reviewsDailyConsolidations: state => {
       const reviewsDailyConsolidations = []
 
-      for (const date of Object.entries(groupBy(state.reviews, 'date'))) {
-        const reviewsOnThisDate = date[1]
-
+      for (const [date, reviews] of toPairs(groupBy(state.reviews, 'date'))) {
         const scores = []
 
-        for (const review of reviewsOnThisDate) {
+        for (const review of reviews) {
           scores.push(review.score)
         }
 
         const averageScore = mean(scores)
 
         reviewsDailyConsolidations.push({
-          date: date[0],
-          totalReviews: reviewsOnThisDate.length,
+          date: date,
+          totalReviews: reviews.length,
           averageScore: averageScore.toFixed(2)
         })
       }
@@ -119,10 +115,11 @@ export default new Vuex.Store({
           data: []
         })
 
-        for (const date of Object.entries(groupBy(state.reviews, 'date'))) {
+        for (const [date, reviews] of toPairs(groupBy(state.reviews, 'date'))) {
           const objIndex = totalSentimentsDaily.findIndex(obj => obj.name === sentiment)
 
-          totalSentimentsDaily[objIndex].data.push(filter(state.reviews, { sentiment: sentiment, date: date[0] }).length)
+          const filteredReviewsLength = filter(state.reviews, { date: date, sentiment: sentiment }).length
+          totalSentimentsDaily[objIndex].data.push(filteredReviewsLength)
         }
       }
 
@@ -161,7 +158,7 @@ export default new Vuex.Store({
           data: []
         })
 
-        for (const source of ['Google', 'Facebook']) {
+        for (const [source] of toPairs(groupBy(state.reviews, 'source'))) {
           const objIndex = totalSentimentsBySource.findIndex(obj => obj.name === sentiment)
 
           totalSentimentsBySource[objIndex].data.push(filter(state.reviews, { sentiment: sentiment, source: source }).length)
@@ -174,12 +171,13 @@ export default new Vuex.Store({
       const totalSentimentsByGender = []
 
       for (const sentiment of ['Positivo', 'Neutro', 'Negativo']) {
+        console.log(sentiment)
         totalSentimentsByGender.push({
           name: sentiment,
           data: []
         })
 
-        for (const gender of ['male', 'female']) {
+        for (const [gender] of toPairs(groupBy(state.reviews, 'gender'))) {
           const objIndex = totalSentimentsByGender.findIndex(obj => obj.name === sentiment)
 
           totalSentimentsByGender[objIndex].data.push(filter(state.reviews, { sentiment: sentiment, gender: gender }).length)
@@ -188,19 +186,25 @@ export default new Vuex.Store({
 
       return totalSentimentsByGender
     },
-    totalCategories: state => {
+    categoriesBySentiment: state => (sentiment: string) => {
       const categories = []
 
-      for (const review of state.reviews) {
+      for (const review of filter(state.reviews, { sentiment: sentiment })) {
         for (const category of review.categories) {
           categories.push(category)
         }
       }
 
-      console.log(uniq(categories))
-      console.log(groupBy(categories))
+      const categoriesBySentiment = []
 
-      return groupBy(categories)
+      for (const [category, values] of toPairs(groupBy(categories))) {
+        categoriesBySentiment.push({
+          name: category,
+          value: values.length
+        })
+      }
+
+      return categoriesBySentiment
     }
   },
   actions: {
@@ -212,9 +216,9 @@ export default new Vuex.Store({
 
         // Only categories come unparsed. Maybe stringfied twice.
         // This is a fix (in real life this fix should be done in the backend):
-        const reviews = res.data.map(review => {
+        const reviews = res.data.map((review: Review) => {
           return {
-            categories: JSON.parse(review.categories),
+            categories: JSON.parse(clone(review.categories)),
             date: review.date,
             gender: review.gender,
             language: review.language,
@@ -250,4 +254,6 @@ export default new Vuex.Store({
       }
     }
   }
-})
+}
+
+export default new Vuex.Store<RootState>(store)

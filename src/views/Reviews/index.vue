@@ -1,5 +1,5 @@
 <template>
-  <div id="reviews" @click="$store.commit('SET_OPENDED_FILTER', null)">
+  <div id="reviews" @click="$store.commit('SET_OPENDED_FILTER', '')">
 
     <div class="filters">
       <span class="label">Filtros: </span>
@@ -35,6 +35,10 @@ export default Vue.extend({
     Card,
     Review,
     Pagination
+  },
+  beforeRouteLeave (to, from, next) {
+    this.$store.commit('SET_OPENDED_FILTER', '')
+    next()
   }
 })
 </script>
@@ -45,6 +49,7 @@ export default Vue.extend({
   grid-template-columns: 1fr;
   grid-template-rows: 28px auto 50px;
   grid-gap: 22px;
+  width: 100%;
 
   .filters {
     display: flex;
@@ -61,8 +66,7 @@ export default Vue.extend({
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: 120px;
-    grid-gap: 25px;
-    align-items: center;
+    grid-gap: 22px;
   }
 }
 </style>

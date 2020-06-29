@@ -8,7 +8,7 @@ import Vue from 'vue'
 export default Vue.extend({
   computed: {
     series () {
-      return this.$store.getters.totalReviewsBySentimentSeries
+      return this.$store.getters.totalSentimentsBySourceSeries
     },
     chartOptions () {
       return {
@@ -16,7 +16,9 @@ export default Vue.extend({
           toolbar: {
             show: false
           },
-          fontFamily: 'Poppins'
+          fontFamily: 'Poppins',
+          stacked: true,
+          stackType: '100%'
         },
         tooltip: {
           enabled: false
@@ -25,23 +27,20 @@ export default Vue.extend({
         plotOptions: {
           bar: {
             horizontal: true,
-            barHeight: '60%',
-            distributed: true,
-            dataLabels: {
-              position: 'top'
-            }
+            barHeight: '40%'
           }
         },
         grid: {
           show: false
         },
-        legend: {
-          show: false
-        },
         xaxis: {
+          categories: ['Facebook', 'Google'],
           labels: {
             show: false
           }
+        },
+        legend: {
+          show: false
         }
       }
     }

@@ -17,7 +17,8 @@ export default Vue.extend({
   grid-area: DashboardView;
   display: flex;
   flex-direction: column;
+  align-items: center;
   padding: 30px 40px 40px 40px;
-  overflow: auto;
+  overflow: auto !important;
 }
 </style>

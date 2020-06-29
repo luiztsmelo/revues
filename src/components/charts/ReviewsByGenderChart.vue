@@ -27,14 +27,14 @@ export default Vue.extend({
         plotOptions: {
           bar: {
             horizontal: true,
-            barHeight: '50%'
+            barHeight: '60%'
           }
         },
         grid: {
           show: false
         },
         xaxis: {
-          categories: ['Masculino', 'Feminino'],
+          categories: ['Feminino', 'Masculino', 'Outro'],
           labels: {
             show: false
           }

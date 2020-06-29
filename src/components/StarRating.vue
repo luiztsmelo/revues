@@ -18,8 +18,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .star-rating {
-  display: flex;
-  align-items: center;
+  align-self: start;
 
   img {
     width: 16px;

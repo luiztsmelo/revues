@@ -18,6 +18,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { filter } from 'lodash'
+import { Filter } from '@/types'
 
 export default Vue.extend({
   props: {
@@ -26,7 +27,7 @@ export default Vue.extend({
   },
   data () {
     return {
-      reviewsOptions: [
+      filterOptions: [
         { parameter: 'score', text: '1 estrela', value: 1 },
         { parameter: 'score', text: '2 estrelas', value: 2 },
         { parameter: 'score', text: '3 estrelas', value: 3 },
@@ -35,8 +36,9 @@ export default Vue.extend({
         { parameter: 'sentiment', text: 'Positivo', value: 'Positivo' },
         { parameter: 'sentiment', text: 'Neutro', value: 'Neutro' },
         { parameter: 'sentiment', text: 'Negativo', value: 'Negativo' },
-        { parameter: 'gender', text: 'Masculino', value: 'male' },
         { parameter: 'gender', text: 'Feminino', value: 'female' },
+        { parameter: 'gender', text: 'Masculino', value: 'male' },
+        { parameter: 'gender', text: 'Outro', value: 'other' },
         { parameter: 'source', text: 'Google', value: 'Google' },
         { parameter: 'source', text: 'Facebook', value: 'Facebook' }
       ]
@@ -45,19 +47,19 @@ export default Vue.extend({
   methods: {
     filterButtonClick () {
       if (this.$store.state.openedFilter && this.$store.state.openedFilter === this.parameter) {
-        this.$store.commit('SET_OPENDED_FILTER', null)
+        this.$store.commit('SET_OPENDED_FILTER', '')
       } else {
         this.$store.commit('SET_OPENDED_FILTER', this.parameter)
       }
     },
-    optionClick (option) {
+    optionClick (option: Filter) {
       this.$store.commit('SET_FILTER', option)
-      this.$store.commit('SET_OPENDED_FILTER', null)
+      this.$store.commit('SET_OPENDED_FILTER', '')
     }
   },
   computed: {
-    filteredOptions () {
-      return filter(this.reviewsOptions, { parameter: this.parameter })
+    filteredOptions (): Filter {
+      return filter(this.filterOptions, { parameter: this.parameter })
     },
     buttonClasses () {
       let isOpened = false
@@ -78,7 +80,7 @@ export default Vue.extend({
     }
   },
   watch: {
-    '$store.state.filters' (value) {
+    '$store.state.filters' (value: Filter) {
       if (value) {
         this.$store.commit('SET_PAGINATION_PAGE', 1)
       }

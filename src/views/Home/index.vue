@@ -66,9 +66,10 @@ export default Vue.extend({
 <style lang="scss" scoped>
 #home {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   grid-template-rows: 260px 1fr 1fr 1fr;
   grid-gap: 22px;
+  width: 100%;
 
   .score-container {
     display: grid;
@@ -98,7 +99,7 @@ export default Vue.extend({
   .reviews-table {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-auto-rows: auto;
+    grid-auto-rows: 120px;
     grid-gap: 22px;
     margin-top: 20px;
   }

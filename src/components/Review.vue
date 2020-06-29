@@ -33,7 +33,7 @@ export default Vue.extend({
     }
   },
   computed: {
-    sentimentClass () {
+    sentimentClass (): string {
       if (this.review.sentiment === 'Positivo') {
         return 'sentiment-positive'
       } else if (this.review.sentiment === 'Neutro') {
@@ -42,7 +42,7 @@ export default Vue.extend({
         return 'sentiment-negative'
       }
     },
-    reviewText () {
+    reviewText (): string {
       return truncate(this.review.text, 132)
     }
   }
@@ -55,10 +55,10 @@ export default Vue.extend({
   background-color: $light_grey;
   border-radius: 12px;
   padding: 16px;
-  transition: transform .2s ease-out;
+  background-color: #fff;
 
   &:hover {
-    background-color: rgb(242,242,242);
+    background-color: rgb(244,244,244);
   }
 
   header {
@@ -92,9 +92,9 @@ export default Vue.extend({
     }
 
     @keyframes animateSentimentNeutral {
-      0%   {transform: scale(0.75);}
-      50%  {transform: scale(1.02);}
-      100% {transform: scale(0.75);}
+      0%   {transform: scale(0.8);}
+      50%  {transform: scale(1.04);}
+      100% {transform: scale(0.8);}
     }
 
     @keyframes animateSentimentNegative {

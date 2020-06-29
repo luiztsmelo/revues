@@ -1,14 +1,13 @@
 <template>
   <div id="dashboard-layout">
 
-    <Loading v-if="$store.state.loading" />
-
     <DashboardHeader />
 
     <DashboardSidebar :links="dashboardSidebarLinks" />
 
-    <DashboardView v-if="!$store.state.loading">
-      <slot />
+    <DashboardView>
+      <ScaleLoader :loading="$store.state.loading" color="#FFB600" />
+      <slot v-if="!$store.state.loading" />
     </DashboardView>
 
   </div>
@@ -16,18 +15,18 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Loading from '@/components/Loading.vue'
 import DashboardHeader from './components/DashboardHeader.vue'
 import DashboardSidebar from './components/DashboardSidebar.vue'
 import DashboardView from './components/DashboardView.vue'
+import ScaleLoader from 'vue-spinner/src/ScaleLoader.vue'
 
 export default Vue.extend({
   name: 'dashboard-layout',
   components: {
-    Loading,
     DashboardHeader,
     DashboardSidebar,
-    DashboardView
+    DashboardView,
+    ScaleLoader
   },
   data () {
     return {

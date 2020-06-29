@@ -25,7 +25,7 @@ export default Vue.extend({
         plotOptions: {
           bar: {
             horizontal: false,
-            columnWidth: '50%'
+            columnWidth: '40%'
           }
         },
         grid: {
