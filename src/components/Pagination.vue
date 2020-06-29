@@ -33,9 +33,10 @@ export default Vue.extend({
   align-items: center;
   justify-self: center;
   align-self: center;
+  background-color: $light_grey;
 
   .range {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 400;
     width: 140px;
     text-align: center;

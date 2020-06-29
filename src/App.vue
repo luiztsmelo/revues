@@ -22,6 +22,6 @@ export default Vue.extend({
 
 #app {
   font-family: 'Poppins';
-  color: #333333;
+  color: $dark_text;
 }
 </style>

@@ -1,11 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
-import { sortBy, groupBy, filter, reject } from 'lodash'
+import createPersistedState from 'vuex-persistedstate'
+import { mean, sortBy, groupBy, filter, reject, uniq } from 'lodash'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  plugins: [createPersistedState({ storage: window.localStorage })],
   state: {
     loading: false,
     error: {
@@ -72,48 +74,133 @@ export default new Vuex.Store({
     latestNegativeReviews: state => (items: number) => {
       const latestNegativeReviews = filter(state.reviews, { sentiment: 'Negativo' }).reverse()
 
-      const r = groupBy(state.reviews, 'categories')
-      console.log(r)
-
       return latestNegativeReviews.slice(0, items)
     },
     averageScore: state => {
-      if (state.reviews.length > 0) {
-        const averageScore = state.reviews.reduce((prev, curr) => prev + curr.score, 0) / state.reviews.length
+      const scores = []
 
-        return averageScore.toFixed(1)
-      } else {
-        return 0
+      for (const review of state.reviews) {
+        scores.push(review.score)
       }
+
+      const averageScore = mean(scores)
+
+      return averageScore.toFixed(1)
     },
-    groupReviews: state => (parameter: string) => {
-      return Object.entries(groupBy(state.reviews, parameter))
-    },
-    reviewsDailyConsolidations: (state, getters) => {
+    reviewsDailyConsolidations: state => {
       const reviewsDailyConsolidations = []
 
-      for (const date of getters.groupReviews('date')) {
-        const reviewsThisDate = date[1]
+      for (const date of Object.entries(groupBy(state.reviews, 'date'))) {
+        const reviewsOnThisDate = date[1]
 
-        const averageScore = reviewsThisDate.reduce((prev, curr) => prev + curr.score, 0) / reviewsThisDate.length
+        const scores = []
+
+        for (const review of reviewsOnThisDate) {
+          scores.push(review.score)
+        }
+
+        const averageScore = mean(scores)
 
         reviewsDailyConsolidations.push({
           date: date[0],
-          totalReviews: reviewsThisDate.length,
+          totalReviews: reviewsOnThisDate.length,
           averageScore: averageScore.toFixed(2)
         })
       }
 
       return reviewsDailyConsolidations
     },
-    totalReviewsByScore: state => {
+    totalSentimentsDailySeries: state => {
+      const totalSentimentsDaily = []
+
+      for (const sentiment of ['Positivo', 'Neutro', 'Negativo']) {
+        totalSentimentsDaily.push({
+          name: sentiment,
+          data: []
+        })
+
+        for (const date of Object.entries(groupBy(state.reviews, 'date'))) {
+          const objIndex = totalSentimentsDaily.findIndex(obj => obj.name === sentiment)
+
+          totalSentimentsDaily[objIndex].data.push(filter(state.reviews, { sentiment: sentiment, date: date[0] }).length)
+        }
+      }
+
+      return totalSentimentsDaily
+    },
+    totalReviewsByScoreSeries: state => {
       const totalReviewsByScore = []
 
       for (const score of [5, 4, 3, 2, 1]) {
-        totalReviewsByScore.push(filter(state.reviews, { score: score }).length)
+        totalReviewsByScore.push({
+          x: score.toString(),
+          y: filter(state.reviews, { score: score }).length
+        })
       }
 
-      return totalReviewsByScore
+      return [{ data: totalReviewsByScore }]
+    },
+    totalReviewsBySentimentSeries: state => {
+      const totalReviewsBySentiment = []
+
+      for (const sentiment of ['Positivo', 'Neutro', 'Negativo']) {
+        totalReviewsBySentiment.push({
+          x: sentiment,
+          y: filter(state.reviews, { sentiment: sentiment }).length
+        })
+      }
+
+      return [{ data: totalReviewsBySentiment }]
+    },
+    totalSentimentsBySourceSeries: state => {
+      const totalSentimentsBySource = []
+
+      for (const sentiment of ['Positivo', 'Neutro', 'Negativo']) {
+        totalSentimentsBySource.push({
+          name: sentiment,
+          data: []
+        })
+
+        for (const source of ['Google', 'Facebook']) {
+          const objIndex = totalSentimentsBySource.findIndex(obj => obj.name === sentiment)
+
+          totalSentimentsBySource[objIndex].data.push(filter(state.reviews, { sentiment: sentiment, source: source }).length)
+        }
+      }
+
+      return totalSentimentsBySource
+    },
+    totalSentimentsByGenderSeries: state => {
+      const totalSentimentsByGender = []
+
+      for (const sentiment of ['Positivo', 'Neutro', 'Negativo']) {
+        totalSentimentsByGender.push({
+          name: sentiment,
+          data: []
+        })
+
+        for (const gender of ['male', 'female']) {
+          const objIndex = totalSentimentsByGender.findIndex(obj => obj.name === sentiment)
+
+          totalSentimentsByGender[objIndex].data.push(filter(state.reviews, { sentiment: sentiment, gender: gender }).length)
+        }
+      }
+
+      return totalSentimentsByGender
+    },
+    totalCategories: state => {
+      const categories = []
+
+      for (const review of state.reviews) {
+        for (const category of review.categories) {
+          categories.push(category)
+        }
+      }
+
+      console.log(uniq(categories))
+      console.log(groupBy(categories))
+
+      return groupBy(categories)
     }
   },
   actions: {
@@ -123,10 +210,27 @@ export default new Vuex.Store({
 
         const res = await axios.get('https://s3.amazonaws.com/files.harmo.me/reviews_test.json')
 
-        console.log(res.data)
+        // Only categories come unparsed. Maybe stringfied twice.
+        // This is a fix (in real life this fix should be done in the backend):
+        const reviews = res.data.map(review => {
+          return {
+            categories: JSON.parse(review.categories),
+            date: review.date,
+            gender: review.gender,
+            language: review.language,
+            reviewer: review.reviewer,
+            score: review.score,
+            sentiment: review.sentiment,
+            source: review.source,
+            text: review.text
+          }
+        })
 
-        commit('SET_REVIEWS', res.data)
+        console.log(reviews)
+
+        commit('SET_REVIEWS', reviews)
       } catch (error) {
+        console.error(error)
         commit('SET_ERROR', {
           status: true,
           message: error

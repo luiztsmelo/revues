@@ -1,6 +1,6 @@
 <template>
   <div id="dashboard-header">
-    <h1>{{ $route.name }}</h1>
+    <span class="page-name">{{ $route.name }}</span>
   </div>
 </template>
 
@@ -18,5 +18,11 @@ export default Vue.extend({
   display: grid;
   align-items: center;
   padding: 0 40px;
+  border-bottom: 1px solid #dedede;
+
+  .page-name {
+    font-size: 26px;
+    font-weight: 700;
+  }
 }
 </style>

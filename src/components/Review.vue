@@ -1,5 +1,5 @@
 <template>
-  <div class="review">
+  <div class="review" @click="openModal">
     <header>
       <div class="sentiment" :class="sentimentClass"></div>
 
@@ -26,6 +26,11 @@ export default Vue.extend({
   },
   components: {
     StarRating
+  },
+  methods: {
+    openModal () {
+      alert('Ideia de abrir um modal com mais informações sobre a avaliação, e apresentar algumas ações.')
+    }
   },
   computed: {
     sentimentClass () {
@@ -87,14 +92,14 @@ export default Vue.extend({
     }
 
     @keyframes animateSentimentNeutral {
-      0%   {transform: scale(0.8);}
-      50%  {transform: scale(1);}
-      100% {transform: scale(0.8);}
+      0%   {transform: scale(0.75);}
+      50%  {transform: scale(1.02);}
+      100% {transform: scale(0.75);}
     }
 
     @keyframes animateSentimentNegative {
       0%   {transform: scale(0.7);}
-      50%  {transform: scale(1);}
+      50%  {transform: scale(1.07);}
       100% {transform: scale(0.7);}
     }
 
@@ -117,6 +122,10 @@ export default Vue.extend({
 
   .text {
     font-size: 13px;
+  }
+
+  span::first-letter {
+    text-transform: uppercase;
   }
 }
 </style>

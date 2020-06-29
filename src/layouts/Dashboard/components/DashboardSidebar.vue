@@ -4,7 +4,7 @@
     <span class="logo">revues</span>
 
     <div class="brand-info">
-      <span class="name">Shop. Guanabara</span>
+      <span class="name">Barra Shopping</span>
     </div>
 
     <nav>
@@ -40,7 +40,7 @@ export default Vue.extend({
   flex-direction: column;
   align-items: center;
   background-color: $dark_grey;
-  padding: 40px 20px;
+  padding: 33px 20px;
 
   .logo {
     text-transform: uppercase;

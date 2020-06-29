@@ -9,7 +9,7 @@ Vue.use(VueRouter)
 const routes: Array<RouteConfig> = [
   {
     path: '/',
-    name: 'Início',
+    name: 'Visão Geral',
     component: Home,
     meta: {
       layout: 'dashboard-layout'

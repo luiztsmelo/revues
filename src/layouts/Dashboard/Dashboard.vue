@@ -33,7 +33,7 @@ export default Vue.extend({
     return {
       dashboardSidebarLinks: [
         {
-          label: 'Início',
+          label: 'Visão Geral',
           to: '/',
           iconName: 'dashboard'
         },
@@ -60,8 +60,8 @@ export default Vue.extend({
     'DashboardSidebar DashboardHeader'
     'DashboardSidebar DashboardView';
   grid-template-columns: 230px auto;
-  grid-template-rows: 120px auto;
-  min-height: 100vh;
+  grid-template-rows: 90px auto;
+  height: 100vh;
   width: 100vw;
 }
 </style>

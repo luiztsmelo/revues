@@ -1,19 +1,17 @@
 <template>
   <div class="reviews-filter">
-    <button type="button" @click.stop="buttonClick" :class="buttonClasses">{{ label }}</button>
+    <button type="button" @click.stop="filterButtonClick" :class="buttonClasses">{{ label }}</button>
 
-    <form v-if="$store.state.openedFilter === parameter">
-      <div class="options">
-        <span
-          class="option"
-          :class="{ 'selected-option': $store.state.filters.includes(option) }"
-          v-for="option in filteredOptions"
-          :key="option.value"
-          @click="optionClick(option)"
-          >{{ option.text }}
-        </span>
-      </div>
-    </form>
+    <div class="options" v-if="$store.state.openedFilter === parameter">
+      <span
+        class="option"
+        :class="{ 'selected-option': $store.state.filters.includes(option) }"
+        v-for="option in filteredOptions"
+        :key="option.value"
+        @click="optionClick(option)"
+        >{{ option.text }}
+      </span>
+    </div>
   </div>
 </template>
 
@@ -45,7 +43,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    buttonClick () {
+    filterButtonClick () {
       if (this.$store.state.openedFilter && this.$store.state.openedFilter === this.parameter) {
         this.$store.commit('SET_OPENDED_FILTER', null)
       } else {
@@ -102,7 +100,7 @@ export default Vue.extend({
     height: 28px;
     border-radius: 18px;
     border: 1px solid $medium_grey;
-    padding: 0 10px;
+    padding: 0 12px;
     margin-right: 7px;
     background-color: #fff;
     font-size: 13px;
@@ -125,7 +123,9 @@ export default Vue.extend({
     color: #fff !important;
   }
 
-  form {
+  .options {
+    display: flex;
+    flex-direction: column;
     position: absolute;
     top: 0;
     left: 0;
@@ -137,31 +137,26 @@ export default Vue.extend({
     overflow: hidden;
     z-index: 2;
 
-    .options {
-      display: flex;
-      flex-direction: column;
+    .option {
+      cursor: pointer;
+      line-height: 36px;
+      border-bottom: 1px solid #dedede;
+      padding: 0 15px;
+      font-size: 14px;
+      font-weight: 400;
 
-      .option {
-        cursor: pointer;
-        line-height: 36px;
-        border-bottom: 1px solid #dedede;
-        padding: 0 15px;
-        font-size: 14px;
-        font-weight: 400;
-
-        &:last-child {
-          border: none;
-        }
-
-        &:hover {
-          background-color: $light_grey;
-        }
+      &:last-child {
+        border: none;
       }
 
-      .selected-option {
-        background-color: $dark_grey !important;
-        color: #fff !important;
+      &:hover {
+        background-color: $light_grey;
       }
+    }
+
+    .selected-option {
+      background-color: $dark_grey !important;
+      color: #fff !important;
     }
   }
 }
