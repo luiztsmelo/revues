@@ -20,7 +20,7 @@
 
     <Card label="Últimas avaliações negativas" style="grid-area: 2 / 1 / 5 / 3">
       <div class="reviews-table">
-        <Review v-for="(review, index) in $store.getters.latestNegativeReviews(10, 1)" :key="index" :review="review" />
+        <Review v-for="(review, index) in $store.getters.latestNegativeReviews($store.state.windowWidth <= 1440 ? 5 : 10, 1)" :key="index" :review="review" />
       </div>
     </Card>
 
@@ -98,6 +98,7 @@ export default Vue.extend({
       .total-reviews {
         font-size: 13px;
         font-weight: 500;
+        text-align: center;
       }
     }
   }
@@ -108,6 +109,10 @@ export default Vue.extend({
     grid-auto-rows: 120px;
     grid-gap: 22px;
     margin-top: 20px;
+
+    @media screen and (max-width: 1440px) {
+      grid-template-columns: 1fr;
+    }
   }
 }
 </style>

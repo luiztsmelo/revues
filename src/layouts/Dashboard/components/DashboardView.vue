@@ -18,7 +18,7 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 30px 40px 40px 40px;
+  padding: 30px;
   overflow: auto !important;
 }
 </style>

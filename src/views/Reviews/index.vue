@@ -67,6 +67,10 @@ export default Vue.extend({
     grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: 120px;
     grid-gap: 22px;
+
+    @media screen and (max-width: 1440px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 }
 </style>

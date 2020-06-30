@@ -58,8 +58,8 @@ export default Vue.extend({
   grid-template-areas:
     'DashboardSidebar DashboardHeader'
     'DashboardSidebar DashboardView';
-  grid-template-columns: 230px auto;
-  grid-template-rows: 90px auto;
+  grid-template-columns: 220px auto;
+  grid-template-rows: 80px auto;
   height: 100vh;
   width: 100vw;
 }

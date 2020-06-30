@@ -10,17 +10,21 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   plugins: [createPersistedState({ storage: window.localStorage })],
   state: {
+    windowWidth: 0,
     loading: false,
     error: null,
     reviews: [] as Review[],
     openedFilter: '',
     filters: [] as Filter[],
     pagination: {
-      itemsPerPage: 12,
+      itemsPerPage: 0,
       page: 1
     }
   },
   mutations: {
+    SET_WINDOW_WIDTH (state, width: number) {
+      state.windowWidth = width
+    },
     SET_LOADING (state, status: boolean) {
       state.loading = status
     },
@@ -46,6 +50,9 @@ export default new Vuex.Store({
       } else {
         state.filters.push(filter)
       }
+    },
+    SET_PAGINATION_ITEMS_PER_PAGE (state, itemsPerPage: number) {
+      state.pagination.itemsPerPage = itemsPerPage
     },
     SET_PAGINATION_PAGE (state, page: number) {
       state.pagination.page = page

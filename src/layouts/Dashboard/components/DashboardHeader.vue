@@ -17,7 +17,7 @@ export default Vue.extend({
   grid-area: DashboardHeader;
   display: grid;
   align-items: center;
-  padding: 0 40px;
+  padding: 0 30px;
   border-bottom: 1px solid $light_grey;
 
   .page-name {

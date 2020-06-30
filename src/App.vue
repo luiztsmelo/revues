@@ -11,6 +11,8 @@ import Vue from 'vue'
 
 export default Vue.extend({
   created () {
+    this.$store.commit('SET_WINDOW_WIDTH', window.outerWidth)
+    this.$store.commit('SET_PAGINATION_ITEMS_PER_PAGE', this.$store.state.windowWidth <= 1440 ? 6 : 12)
     this.$store.dispatch('fetchReviews')
   }
 })

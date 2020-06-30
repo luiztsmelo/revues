@@ -54,7 +54,7 @@ export default Vue.extend({
     margin: 70px 0;
 
     .name {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 500;
       color: #fff;
     }
@@ -81,12 +81,12 @@ export default Vue.extend({
         width: 16px;
         height: auto;
         filter: invert(100%);
-        margin-right: 18px;
+        margin-right: 16px;
       }
 
       .label {
         color: #fff;
-        font-size: 14px;
+        font-size: 13px;
       }
     }
 
