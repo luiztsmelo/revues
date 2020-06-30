@@ -5,7 +5,7 @@
       <TotalReviewsDailyChart />
     </Card>
 
-    <Card label="Evolução avaliações por sentimentos totais" style="grid-area: 1 / 3 / 1 / 5">
+    <Card label="Evolução avaliações totais por sentimentos" style="grid-area: 1 / 3 / 1 / 5">
       <TotalSentimentsDailyChart />
     </Card>
 

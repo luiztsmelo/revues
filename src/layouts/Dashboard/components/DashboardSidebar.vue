@@ -40,12 +40,12 @@ export default Vue.extend({
   flex-direction: column;
   align-items: center;
   background-color: $dark_grey;
-  padding: 33px 20px;
+  padding: 30px 20px;
 
   .logo {
     text-transform: uppercase;
-    font-size: 23px;
-    font-weight: 400;
+    font-size: 28px;
+    font-weight: 300;
     color: #fff;
     letter-spacing: 5px;
   }

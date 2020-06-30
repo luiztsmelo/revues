@@ -52,7 +52,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .review {
   cursor: pointer;
-  background-color: $light_grey;
+  background-color: $lightest_grey;
   border-radius: 12px;
   padding: 16px;
   background-color: #fff;

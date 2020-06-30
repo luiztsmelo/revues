@@ -18,7 +18,7 @@ export default Vue.extend({
   display: grid;
   align-items: center;
   padding: 0 40px;
-  border-bottom: 1px solid #dedede;
+  border-bottom: 1px solid $light_grey;
 
   .page-name {
     font-size: 26px;

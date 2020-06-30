@@ -15,14 +15,3 @@ export interface Filter {
   text: string
   value: number
 }
-export interface RootState {
-  loading: boolean
-  error: any
-  reviews: Review[]
-  openedFilter: string
-  filters: Filter[]
-  pagination: {
-    itemsPerPage: number
-    page: number
-  }
-}

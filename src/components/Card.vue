@@ -23,7 +23,7 @@ export default Vue.extend({
 .card {
   display: flex;
   flex-direction: column;
-  background-color: $light_grey;
+  background-color: $lightest_grey;
   border-radius: 12px;
   padding: 20px;
 

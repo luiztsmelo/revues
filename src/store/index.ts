@@ -2,19 +2,19 @@ import Vue from 'vue'
 import Vuex, { StoreOptions } from 'vuex'
 import axios from 'axios'
 import createPersistedState from 'vuex-persistedstate'
-import { mean, sortBy, groupBy, filter, find, reject, clone, toPairs } from 'lodash'
-import { RootState, Review, Filter } from '@/types'
+import { mean, sortBy, groupBy, filter, find, findIndex, reject, clone, toPairs } from 'lodash'
+import { Review, Filter } from '@/types'
 
 Vue.use(Vuex)
 
-const store: StoreOptions<RootState> = {
+export default new Vuex.Store({
   plugins: [createPersistedState({ storage: window.localStorage })],
   state: {
     loading: false,
     error: null,
-    reviews: [],
+    reviews: [] as Review[],
     openedFilter: '',
-    filters: [],
+    filters: [] as Filter[],
     pagination: {
       itemsPerPage: 12,
       page: 1
@@ -112,11 +112,11 @@ const store: StoreOptions<RootState> = {
       for (const sentiment of ['Positivo', 'Neutro', 'Negativo']) {
         totalSentimentsDaily.push({
           name: sentiment,
-          data: []
+          data: [] as number[]
         })
 
-        for (const [date, reviews] of toPairs(groupBy(state.reviews, 'date'))) {
-          const objIndex = totalSentimentsDaily.findIndex(obj => obj.name === sentiment)
+        for (const [date] of toPairs(groupBy(state.reviews, 'date'))) {
+          const objIndex = findIndex(totalSentimentsDaily, { name: sentiment })
 
           const filteredReviewsLength = filter(state.reviews, { date: date, sentiment: sentiment }).length
           totalSentimentsDaily[objIndex].data.push(filteredReviewsLength)
@@ -155,7 +155,7 @@ const store: StoreOptions<RootState> = {
       for (const sentiment of ['Positivo', 'Neutro', 'Negativo']) {
         totalSentimentsBySource.push({
           name: sentiment,
-          data: []
+          data: [] as number[]
         })
 
         for (const [source] of toPairs(groupBy(state.reviews, 'source'))) {
@@ -171,10 +171,9 @@ const store: StoreOptions<RootState> = {
       const totalSentimentsByGender = []
 
       for (const sentiment of ['Positivo', 'Neutro', 'Negativo']) {
-        console.log(sentiment)
         totalSentimentsByGender.push({
           name: sentiment,
-          data: []
+          data: [] as number[]
         })
 
         for (const [gender] of toPairs(groupBy(state.reviews, 'gender'))) {
@@ -254,6 +253,4 @@ const store: StoreOptions<RootState> = {
       }
     }
   }
-}
-
-export default new Vuex.Store<RootState>(store)
+})

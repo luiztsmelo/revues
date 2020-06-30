@@ -110,13 +110,13 @@ export default Vue.extend({
 
     &:hover {
       border: 1px solid $dark_grey;
-      background-color: $light_grey;
+      background-color: $lightest_grey;
     }
   }
 
   .opened {
     border: 1px solid $dark_grey;
-    background-color: $light_grey;
+    background-color: $lightest_grey;
   }
 
   .selected {
@@ -135,14 +135,14 @@ export default Vue.extend({
     width: 180px;
     background-color: #fff;
     border-radius: 12px;
-    border: 1px solid #dedede;
+    border: 1px solid $light_grey;
     overflow: hidden;
     z-index: 2;
 
     .option {
       cursor: pointer;
       line-height: 36px;
-      border-bottom: 1px solid #dedede;
+      border-bottom: 1px solid $light_grey;
       padding: 0 15px;
       font-size: 14px;
       font-weight: 400;
@@ -152,7 +152,7 @@ export default Vue.extend({
       }
 
       &:hover {
-        background-color: $light_grey;
+        background-color: $lightest_grey;
       }
     }
 

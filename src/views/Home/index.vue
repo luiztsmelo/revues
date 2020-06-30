@@ -36,6 +36,10 @@
       <ReviewsByGenderChart />
     </Card>
 
+    <Card label="Evolução avaliações totais" style="grid-area: 5 / 1 / 6 / 4">
+      <TotalReviewsDailyChart />
+    </Card>
+
   </div>
 </template>
 
@@ -47,6 +51,7 @@ import AverageScoreDailyChart from '@/components/charts/AverageScoreDailyChart.v
 import ReviewsBySentimentChart from '@/components/charts/ReviewsBySentimentChart.vue'
 import ReviewsBySourceChart from '@/components/charts/ReviewsBySourceChart.vue'
 import ReviewsByGenderChart from '@/components/charts/ReviewsByGenderChart.vue'
+import TotalReviewsDailyChart from '@/components/charts/TotalReviewsDailyChart.vue'
 import Review from '@/components/Review.vue'
 
 export default Vue.extend({
@@ -58,6 +63,7 @@ export default Vue.extend({
     ReviewsBySentimentChart,
     ReviewsBySourceChart,
     ReviewsByGenderChart,
+    TotalReviewsDailyChart,
     Review
   }
 })
@@ -67,7 +73,7 @@ export default Vue.extend({
 #home {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: 260px 1fr 1fr 1fr;
+  grid-template-rows: 260px 1fr 1fr 1fr 260px;
   grid-gap: 22px;
   width: 100%;
 
