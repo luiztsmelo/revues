@@ -55,7 +55,7 @@ import TotalReviewsDailyChart from '@/components/charts/TotalReviewsDailyChart.v
 import Review from '@/components/Review.vue'
 
 export default Vue.extend({
-  name: 'home',
+  name: 'Visão Geral',
   components: {
     Card,
     TotalReviewsByScoreChart,

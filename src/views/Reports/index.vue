@@ -42,7 +42,7 @@ import TotalSentimentsDailyChart from '@/components/charts/TotalSentimentsDailyC
 import WordCloud from 'vue-wordcloud'
 
 export default Vue.extend({
-  name: 'reports',
+  name: 'Relatórios',
   components: {
     Card,
     TotalReviewsDailyChart,

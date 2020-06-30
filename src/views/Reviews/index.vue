@@ -29,7 +29,7 @@ import Review from '@/components/Review.vue'
 import Pagination from '@/components/Pagination.vue'
 
 export default Vue.extend({
-  name: 'reviews',
+  name: 'Avaliações',
   components: {
     ReviewsFilter,
     Card,
